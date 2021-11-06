@@ -1,0 +1,108 @@
+#!/usr/bin/env groovy
+
+pipeline {
+    agent { label 'dsp-infra-qa' }
+
+    options {
+      ansiColor('xterm')
+    }
+	
+    // Environment Variables
+    environment {
+		  AZURE_CREDENTIALS_ID = "dsp-jenkins-qa"
+    }
+
+    // Parameters
+    parameters {
+		choice(choices: ['qa_infra_destroy','qa_app_destroy','qa_extd_destroy'], description: 'Environment', name: 'ENVIRONMENT')
+		string(name: 'ResourceId_ResourceName', defaultValue: 'ALL', description: 'refer code base & provide ResourceId.ResourceName if interested to provision a specific resource. For e.g. 1.resource-groups')
+		booleanParam(name: 'include_adv_infra', defaultValue: false, description: 'Select if need to setup Advanced Infra for the chosen env')
+    }
+
+    stages {
+      stage('Initialize Runtime') {
+        steps {
+          script{
+            FAILED_STAGE=env.STAGE_NAME
+          }
+          withCredentials([azureServicePrincipal('dsp-jenkins-qa')]) {
+           sh('''
+              sudo -E chown -R $USER ~/.azure
+              sudo -E chown -R $USER .
+              
+
+              #Make sure jq is installed
+              which jq || sudo apt-get install jq -y
+
+              #Make sure Azure CLI is installed
+              which az
+
+              #Make sure kubectl is installed
+              which kubectl
+
+            ''')
+          }
+        }
+      }
+	stage('Display Required Utilities') {
+        steps{
+         script{
+            FAILED_STAGE=env.STAGE_NAME
+          }
+
+          withCredentials([azureServicePrincipal(
+            clientIdVariable: 'ARM_CLIENT_ID',
+            clientSecretVariable: 'ARM_CLIENT_SECRET', 
+            credentialsId: env.AZURE_CREDENTIALS_ID, 
+            subscriptionIdVariable: 'ARM_SUBSCRIPTION_ID', 
+            tenantIdVariable: 'ARM_TENANT_ID'
+          )]) {
+           sh('''#!/bin/bash
+              chmod +x deployment/${ENVIRONMENT}.sh
+              
+              echo "****  Installed Binaries  ****"
+              md5sum "$(which terraform)"
+              md5sum "$(which az)"
+
+              terraform version
+              az version
+              helm3 version
+            ''')
+          }
+        }
+      }
+	 stage('Execute Terraform') {
+        steps {
+         script{
+            FAILED_STAGE=env.STAGE_NAME
+         }
+
+          withCredentials([azureServicePrincipal(
+            clientIdVariable: 'ARM_CLIENT_ID',
+            clientSecretVariable: 'ARM_CLIENT_SECRET', 
+            credentialsId: env.AZURE_CREDENTIALS_ID, 
+            subscriptionIdVariable: 'ARM_SUBSCRIPTION_ID', 
+            tenantIdVariable: 'ARM_TENANT_ID'
+          )]) {
+            
+            sh('''#!/bin/bash
+              set -ex
+              echo "Executing Terraform against Environment :-  ${ENVIRONMENT}"
+              echo "${ResourceId_ResourceName}"
+              echo "${include_adv_infra}"
+   	      #cwd=`pwd`  
+              cd deployment
+              find . -name run.sh -exec chmod 755 {} \\;
+
+	      #ls -l
+             
+	      #echo "./${ENVIRONMENT}.sh ${ResourceId_ResourceName} ${include_adv_infra}"
+	      ./"${ENVIRONMENT}".sh "${ResourceId_ResourceName}" "${include_adv_infra}" $ARM_CLIENT_ID $ARM_CLIENT_SECRET $ARM_TENANT_ID $ARM_SUBSCRIPTION_ID
+            ''')            
+
+          }
+        }
+      }
+
+    }
+}

@@ -1,0 +1,1 @@
+This module should be used for resources which create multiple "A" record entries in respective private DNS zones. For e.g. acr

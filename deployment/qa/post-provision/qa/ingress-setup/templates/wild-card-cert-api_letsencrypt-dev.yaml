@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: api-ssl-certs-dev
+  namespace: cert-manager
+spec:
+  secretName: api-ssl-certs-dev
+  issuerRef:
+    name: letsencrypt-dev
+    kind: ClusterIssuer
+  commonName: "*.api-apd-afl.thesurgicalnet.com"
+  dnsNames:
+  - "*.api-apd-afl.thesurgicalnet.com"

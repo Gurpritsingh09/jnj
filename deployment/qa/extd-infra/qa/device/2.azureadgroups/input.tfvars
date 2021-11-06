@@ -1,0 +1,22 @@
+dsp_azuread_security_groups = [
+  "EUN-DS-QA-DVC-SVC-Contributor",
+  "EUN-DS-QA-DVC-SVC-Reader",
+  "EUN-DS-QA-DVC-AKS-Contributor",
+  "EUN-DS-QA-DVC-AKS-Reader",
+  "EUN-DS-QA-DVC-AKS-Admins",
+  "EUN-DS-QA-DVC-AZF-Contributor",
+  "EUN-DS-QA-DVC-AZF-Reader",
+  "EUN-DS-QA-DVC-EVT-Contributor",
+  "EUN-DS-QA-DVC-EVT-Reader",
+  "EUN-DS-QA-DVC-STG-Contributor",
+  "EUN-DS-QA-DVC-STG-Reader",
+  "EUN-DS-QA-DVC-KEY-Reader",
+  "EUN-DS-QA-DVC-KEY-Contributor",
+  "EUN-DS-QA-DVC-ACR-Contributor",
+  "EUN-DS-QA-DVC-ACR-Reader",
+  "EUN-DS-QA-DVC-ACR-Pull",
+  "EUN-DS-QA-DVC-ACR-Push",
+  "EUN-DS-QA-DVC-ACR-Signer",
+  #"DS-QA-DVC-SQL-Contributor",
+  #"DS-QA-DVC-SQL-Reader"
+]

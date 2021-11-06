@@ -1,0 +1,13 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: namespace-admin-role-binding
+  namespace: <namespace_name>
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: <namespace-admin-role>
+subjects:
+- kind: Group
+  namespace: <namespace_name>
+  name: <azure-ns-admin-group-object-id>

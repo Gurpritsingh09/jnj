@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: web-ssl-certs
+  namespace: cert-manager
+spec:
+  secretName: web-ssl-certs
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: "<wild-card-domain>"
+  dnsNames:
+  - "<wild-card-domain>"

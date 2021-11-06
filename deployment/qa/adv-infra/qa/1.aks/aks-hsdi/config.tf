@@ -1,0 +1,11 @@
+
+
+terraform {
+  backend "azurerm" {
+  }
+}
+
+
+
+
+

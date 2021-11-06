@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-test
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email:  DL-RNDUS-DSDevOps-InfraTeam@ITS.JNJ.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-test
+    # ACME DNS-01 provider configurations
+    solvers:
+    - dns01:
+        azuredns:
+          clientID: 9603933b-c6bc-4c2a-be38-8d2c896d2275
+          clientSecretSecretRef:
+            name: azuredns-config
+            key: client-secret
+          subscriptionID: d12bc007-2c84-4c58-8afb-99e8e2ef5ffe
+          tenantID: 6103a105-4013-4e17-8122-966437977bfd
+          resourceGroupName: "NA-DS-NPD-NWK-SH"
+          hostedZoneName: "thesurgicalnet.com"

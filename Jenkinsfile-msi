@@ -1,0 +1,62 @@
+#!/usr/bin/env groovy
+pipeline {
+    agent { label 'infra-npd-agent' }
+    options {
+      ansiColor('xterm')
+    }
+    environment {
+        ARM_USE_MSI=true
+        ARM_SUBSCRIPTION_ID="3e6dbe4e-54bc-4571-b879-08a5011f22f1"
+        ARM_TENANT_ID="6103a105-4013-4e17-8122-966437977bfd"
+    }
+ parameters {
+   choice(choices: ['npd_shared', 'npd_sbx', 'npd_dev','npd_mnt', 'npd_sit'], description: 'Environment', name: 'ENVIRONMENT')
+   string(name: 'ResourceId_ResourceName', defaultValue: 'ALL', description: 'refer code base & provide ResourceId.ResourceName if interested to provision a specific resource. For e.g. 1.resource-groups')
+   booleanParam(name: 'include_adv_infra', defaultValue: false, description: 'Select if need to setup Advanced Infra for the chosen env- Doesnt Apply to shared')}
+  stages{
+    stage('Display Required Utilities') 
+    {
+        steps{
+				 script{
+					FAILED_STAGE=env.STAGE_NAME
+				  }
+				
+				 sh('''#!/bin/bash
+					  chmod +x deployment/${ENVIRONMENT}.sh
+					  echo "****  Installed Binaries  ****"
+					  md5sum "$(which terraform)"
+					  md5sum "$(which az)"
+					  terraform version
+					  az --version
+					''')
+				
+			}
+	}
+    stage('Execute Terraform') {
+			steps{
+				 script{
+				       FAILED_STAGE=env.STAGE_NAME
+					}
+				
+				  sh('''#!/bin/bash
+				  set -ex
+				  echo "Executing Terraform against Environment "
+				  echo "${ENVIRONMENT}"
+				  echo "${ResourceId_ResourceName}"
+				  echo "${include_adv_infra}"
+				  #cwd=`pwd`
+				  cd deployment
+				  find . -name run.sh -exec chmod 755 {} \\;
+				  ls -l
+				  export ARM_USE_MSI="${ARM_USE_MSI}"
+				  export ARM_SUBSCRIPTION_ID="${ARM_SUBSCRIPTION_ID}"
+				  export ARM_TENANT_ID="${ARM_TENANT_ID}"
+
+				  ./"${ENVIRONMENT}".sh "${ResourceId_ResourceName}" "${include_adv_infra}"
+				     ''')
+				
+			}
+		}
+	}
+  }
+

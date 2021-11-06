@@ -1,0 +1,15 @@
+
+
+module "firewall" {
+  source              = "../../modules/firewall/"
+  azure_fw_name   = "DSP-PRM-FW-Terraform"
+  azure_fw_resource_group = "NA-DS-NPD-NWK-SH"
+  azure_fw_location = "northeurope"
+  vnet_name       = "DS_NPD_VNET"
+  fw_subnet_address_space =["172.22.0.0/24"]
+   tags = {
+    environment = "terraform-test"
+    owner ="Infra team"
+    created-by="vdubey3"
+  }
+}

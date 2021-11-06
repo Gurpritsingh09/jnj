@@ -1,0 +1,16 @@
+# Create the public ip
+module "public_ip"  {
+  source              = "../public-ip/"
+  public_ip_name = "${var.azure_fw_name}-pip"
+  public_ip_resource_group = var.azure_fw_resource_group
+  public_ip_location = var.azure_fw_location
+  public_ip_allocation_method = "Static"
+  public_ip_sku = "Standard"
+  public_ip_tags  = {
+    environment = "shared npd"
+    owner ="Infra team"
+    created-by="vdubey3"
+  }
+
+}
+

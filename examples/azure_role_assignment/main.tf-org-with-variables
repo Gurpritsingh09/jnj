@@ -1,0 +1,10 @@
+
+module "azure_role_assignment" {
+  source = "../../modules/azure_role_assignment/"
+  
+  dsp_ad_groups = var.dsp_ad_groups
+  dsp_rgs       = var.dsp_rgs
+  role_definition_name = var.role_definition_name
+  applicable_at_subscription_scope = var.applicable_at_subscription_scope
+  applicable_at_mgmt_grp_scope = var.applicable_at_mgmt_grp_scope
+}

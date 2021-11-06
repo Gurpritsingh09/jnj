@@ -1,0 +1,13 @@
+
+appName=$1
+spn_name="dsp-jenkins-$appName"
+spn_passwd=`openssl rand -base64 32`
+
+# Register an App
+az ad app create --display-name $spn_name
+
+# Obtain the app id
+appId=$(az ad app list --display-name $spn_name --query [].appId -o tsv)
+
+# create a service principal
+az ad sp create-for-rbac --name $spn_name --skip-assignment --years 2

@@ -1,0 +1,4 @@
+resource_group_name = "tfstate_rg"
+storage_account_name = "tfstatestoraccttest"
+container_name       = "examples"
+key                  = "cosmosdb_table_example.tfstate"

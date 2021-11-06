@@ -1,0 +1,1 @@
+crt and key in 3./ingress-setup only applies to HSDI SIT cluster and not a general use for all the clusters. For the other clusters please refer to the certain key in deployment/npd/post_provison/sit/ingress-setup
